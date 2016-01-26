@@ -1,0 +1,1 @@
+web: gunicorn autobnb.wsgi --log-file -
