@@ -1398,7 +1398,7 @@ LAYOUT STYLES
   background-color: #f7fafa; }
 
 .pattern {
-  background-image: url(/static/background.png);
+  background-image: url(/static/css/background.png);
   background-attachment: fixed;
   color: #fff; }
 

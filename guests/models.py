@@ -17,5 +17,19 @@ class Reservation(models.Model):
         else:
             return "[unknown name]"
 
+    @property
+    def location(self):
+        if 'location' in self.guest:
+            return self.guest['location']
+        else:
+            return "[unknown location]"
+
+    @property
+    def picture(self):
+        if 'picture_url' in self.guest:
+            return self.guest['picture_url']
+        else:
+            return "https://i.imgur.com/WBdUBl0.jpg"
+
     def __str__(self):
         return "%s - %s" % (self.confirmation_code, self.name)

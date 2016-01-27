@@ -2,7 +2,9 @@ import datetime
 
 from django.http import HttpResponseNotFound, HttpResponseGone
 from django.shortcuts import render
+from django.utils import timezone
 
+from chat.models import Message
 from guests.models import Reservation
 
 
@@ -16,6 +18,10 @@ def reso(request, confirmation_code):
         return HttpResponseGone("Sorry! Your reservation ended already, so you can't see this anymore.")
 
     if 'msg' in request.POST:
-        pass
+        Message.objects.create(text=request.POST['msg'], reso=reso)
 
-    return render(request, 'reso.html', {})
+    start_date = timezone.now() - datetime.timedelta(days=7)
+    end_date = timezone.now()
+    messages = Message.objects.filter(posted_on__range=(start_date, end_date))
+
+    return render(request, 'reso.html', {'reso': reso, 'messages': messages})
