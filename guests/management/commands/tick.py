@@ -26,7 +26,7 @@ class Command(BaseCommand):
             self.sync_airbnb()
         if options['send_daily_email']:
             self.send_daily_email()
-        self.stdout.write(self.style.SUCCESS("Tick complete."))
+        self.stdout.write(self.style.SUCCESS("Tock."))
 
     def sync_airbnb(self):
         airbnb = AirbnbAPI(settings.AIRBNB_USERNAME, settings.AIRBNB_PASSWORD)
