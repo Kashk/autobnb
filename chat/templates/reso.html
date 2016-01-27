@@ -75,8 +75,9 @@
       </p>
     </div>
   </div>
-  <form>
-    <input type='text' class='new-message z100' autofocus='true' placeholder='Introduce yourself!' />
+  <form method='POST'>
+    {% csrf_token %}
+    <input type='text' class='new-message z100' name='msg' autofocus='true' placeholder='Introduce yourself!' />
   <form>
 </div>
 

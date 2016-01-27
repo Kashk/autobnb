@@ -8,11 +8,12 @@ class Reservation(models.Model):
     dates = DateRangeField()
     guest = JSONField()
 
+    @property
     def name(self):
         if 'full_name' in self.guest:
             return self.guest['full_name']
-        elif 'name' in self.guest:
-            return self.guest['name']
+        elif 'first_name' in self.guest:
+            return self.guest['first_name']
         else:
             return "[unknown name]"
 
