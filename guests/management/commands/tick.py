@@ -30,7 +30,7 @@ class Command(BaseCommand):
 
     def sync_airbnb(self):
         airbnb = AirbnbAPI(settings.AIRBNB_USERNAME, settings.AIRBNB_PASSWORD)
-        resos = airbnb.get_reservations(4)
+        resos = airbnb.get_all_reservations()
 
         for confirmation_code, reso in resos.items():
             if Reservation.objects.filter(confirmation_code=confirmation_code).exists():

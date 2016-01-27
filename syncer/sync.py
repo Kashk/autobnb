@@ -86,3 +86,10 @@ class AirbnbAPI:
                     "end_date": start_date + datetime.timedelta(days=day["reservation"]["nights"]),
                 }
         return resos
+
+    def get_all_reservations(self):
+        all_resos = {}
+        for listing_key in LISTING_IDS.keys():
+            resos = self.get_reservations(listing_key)
+            all_resos.update(resos)
+        return all_resos
