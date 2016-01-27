@@ -11,7 +11,7 @@ class Message(models.Model):
 
     @property
     def posted_by(self):
-        return "%s from %s" (self.reso.name, self.reso.location)
+        return "%s from %s" % (self.reso.name, self.reso.location)
 
     @property
     def thumbnail(self):

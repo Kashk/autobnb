@@ -23,6 +23,7 @@
 
     <div class="splash white">
   <div class='messages center col12'>
+  {% for msg in messages %}
     <div class='message mb1 col11 ml0'>
       <div class='contents'>
         <p class='col10 text-right time'>
@@ -30,50 +31,15 @@
         </p>
         <ul>
       <li>
-        What's the best burrito in the Mission?
+        {{ msg.text }}
       </li>
       </div>
         <div class='image z100'></div>  
       <p class='from col8'>
-        Hans, Germany
+        {{ msg.posted_by }}
       </p>
     </div>
-    <div class='message mb1 col11 ml0'>
-      <div class='contents'>
-        <p class='col10 text-right time'>
-        4:20
-        </p>
-        <ul>
-      <li>
-        Anyone wanna grab a beer at Zietgeist?
-      </li>
-      </div>
-        <div class='image z100'></div>  
-      <p class='from col8'>
-        Hans, Germany
-      </p>
-    </div>
-<div class='message mb1 col11 ml0'>
-      <div class='contents'>
-        <p class='col10 text-right time'>
-        11:54
-        </p>
-        <ul>
-          <li>
-        Hey treat streeters! We're going to the Cal Academy of Sciences on Thursday!
-      </li>
-      <li>
-        Here's a link with some more info: www.linkkinken.com
-      </li>
-      <li>
-        I'm leaving from the house at 6pm if people wanna join
-      </li>
-      </div>
-        <div class='image z100'></div>  
-      <p class='from col8'>
-        Duncan, Host
-      </p>
-    </div>
+  {% endfor %}
   </div>
   <form method='POST'>
     {% csrf_token %}
