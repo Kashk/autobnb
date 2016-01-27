@@ -102,7 +102,7 @@ class AirbnbAPI:
             'end_date': datetime.date.today() + datetime.timedelta(days=7*2),
             '_format': 'host_dashboard_mobile',
             '_offset': 0,
-            'host_id': 23278,  # TODO: sunnyside is different
+            'host_id': self.uid,
         }
 
         r = self._session.get('https://api.airbnb.com/v2/reservations', params=payload)
@@ -113,3 +113,12 @@ class AirbnbAPI:
                 all_resos[reso['confirmation_code']]['thread_id'] = reso['thread_id']
 
         return all_resos
+
+    def send_message(self, thread_id, message):
+        payload = {
+            'message': message,
+            'thread_id': thread_id,
+        }
+
+        r = self._session.post('https://api.airbnb.com/v2/messages', data=json.dumps(payload))
+        r.raise_for_status()
