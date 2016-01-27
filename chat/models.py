@@ -14,5 +14,5 @@ class Message(models.Model):
         return "%s from %s" % (self.reso.name, self.reso.location)
 
     @property
-    def thumbnail(self):
+    def picture(self):
         return self.reso.picture
