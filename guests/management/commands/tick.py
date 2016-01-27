@@ -32,13 +32,15 @@ class Command(BaseCommand):
         airbnb = AirbnbAPI(settings.AIRBNB_USERNAME, settings.AIRBNB_PASSWORD)
         resos = airbnb.get_all_reservations()
 
+        Reservation.objects.all().delete()  # lol
+
         for confirmation_code, reso in resos.items():
-            if Reservation.objects.filter(confirmation_code=confirmation_code).exists():
-                self.stdout.write("Skipping existing reservation: %s" % reso['guest'].get('full_name', '<no name>'))
-            else:
-                Reservation.objects.create(confirmation_code=confirmation_code,
-                    dates=(reso["start_date"], reso["end_date"]), guest=reso['guest'])
-                self.stdout.write("Saved new reservation: %s" % reso['guest'].get('full_name', '<no name>'))
+            Reservation.objects.create(
+                confirmation_code=confirmation_code,
+                dates=(reso["start_date"], reso["end_date"]),
+                guest=reso['guest'],
+                thread_id=reso.get('thread_id', ''))
+            self.stdout.write("Saved new reservation: %s" % reso['guest'].get('full_name', '<no name>'))
 
         self.stdout.write(
             self.style.SUCCESS("Now have %s reservations in the database!" % Reservation.objects.count()))

@@ -64,14 +64,14 @@ class AirbnbAPI:
         url = "https://api.airbnb.com/v2/calendars/" + \
             "{listing_id}/{start_date}/{end_date}?_format=host_calendar".format(
                 listing_id=LISTING_IDS[listing_key],
-                start_date=datetime.date.today() - datetime.timedelta(days=7*4),
-                end_date=datetime.date.today() + datetime.timedelta(days=7*4)
+                start_date=datetime.date.today() - datetime.timedelta(days=7),
+                end_date=datetime.date.today() + datetime.timedelta(days=7*2)
             )
         r = self._session.get(url)
         r.raise_for_status()
         return r.json()['calendar']['days']
 
-    def get_reservations(self, listing_key):
+    def get_reservations_from_calendar(self, listing_key):
         days = self.get_calendar(listing_key)
         resos = {}
         for day in days:
@@ -84,12 +84,32 @@ class AirbnbAPI:
                     "guest": day["reservation"]["guest"],
                     "start_date": start_date,
                     "end_date": start_date + datetime.timedelta(days=day["reservation"]["nights"]),
+                    "thread_id": None,  # gets added in get_all_reservations
                 }
         return resos
 
     def get_all_reservations(self):
         all_resos = {}
         for listing_key in LISTING_IDS.keys():
-            resos = self.get_reservations(listing_key)
+            resos = self.get_reservations_from_calendar(listing_key)
             all_resos.update(resos)
+
+        ## associate resos with thread_ids
+        payload = {
+            '_order': 'start_date',
+            '_limit': 50,
+            'start_date': datetime.date.today() - datetime.timedelta(days=7),
+            'end_date': datetime.date.today() + datetime.timedelta(days=7*2),
+            '_format': 'host_dashboard_mobile',
+            '_offset': 0,
+            'host_id': 23278,  # TODO: sunnyside is different
+        }
+
+        r = self._session.get('https://api.airbnb.com/v2/reservations', params=payload)
+        r.raise_for_status()
+
+        for reso in r.json()['reservations']:
+            if reso['confirmation_code'] in all_resos:
+                all_resos[reso['confirmation_code']]['thread_id'] = reso['thread_id']
+
         return all_resos
