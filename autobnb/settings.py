@@ -119,3 +119,11 @@ STATICFILES_DIRS = (
 # Simplified static file serving.
 # https://warehouse.python.org/project/whitenoise/
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+
+if 'AIRBNB_USERNAME' not in os.environ or 'AIRBNB_PASSWORD' not in os.environ:
+    raise Exception("You need to set the airbnb user/pass. Either do it on the command line\
+        \nor set it in .env and use `heroku local` to run this")
+
+# env vars that should be set in .env
+AIRBNB_USERNAME = os.environ['AIRBNB_USERNAME']
+AIRBNB_PASSWORD = os.environ['AIRBNB_PASSWORD']

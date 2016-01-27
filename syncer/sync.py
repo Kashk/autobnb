@@ -1,4 +1,5 @@
 import datetime, json, logging, sys
+from django.conf import settings
 import requests
 
 logging.basicConfig(level=logging.DEBUG)
@@ -63,7 +64,7 @@ class AirbnbAPI:
         url = "https://api.airbnb.com/v2/calendars/" + \
             "{listing_id}/{start_date}/{end_date}?_format=host_calendar".format(
                 listing_id=LISTING_IDS[listing_key],
-                start_date=datetime.date.today(),
+                start_date=datetime.date.today() - datetime.timedelta(days=7*4),
                 end_date=datetime.date.today() + datetime.timedelta(days=7*4)
             )
         r = self._session.get(url)
@@ -85,17 +86,3 @@ class AirbnbAPI:
                     "end_date": start_date + datetime.timedelta(days=day["reservation"]["nights"]),
                 }
         return resos
-
-if __name__ == '__main__':
-    import django
-    django.setup()
-
-    airbnb = AirbnbAPI("zain@inzain.net", "0v*8HrG*&D25EyXP")
-    resos = airbnb.get_reservations(4)
-
-    from guests.models import Reservation
-
-    for confirmation_code, reso in resos.items():
-        if not Reservation.objects.filter(confirmation_code=confirmation_code).exists():
-            Reservation.objects.create(
-                confirmation_code=confirmation_code, dates=(reso["start_date"], reso["end_date"]), guest=reso['guest'])

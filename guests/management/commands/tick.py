@@ -1,4 +1,8 @@
+from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
+
+from guests.models import Reservation
+from syncer.sync import AirbnbAPI
 
 
 class Command(BaseCommand):
@@ -18,6 +22,26 @@ class Command(BaseCommand):
             help='Shoot out the daily summary email to owners')
 
     def handle(self, *args, **options):
-        self.stdout.write("sync-airbnb: %s" % options['sync_airbnb'])
-        self.stdout.write("send-daily-email: %s" % options['send_daily_email'])
-        self.stdout.write(self.style.SUCCESS("You are worth something!"))
+        if options['sync_airbnb']:
+            self.sync_airbnb()
+        if options['send_daily_email']:
+            self.send_daily_email()
+        self.stdout.write(self.style.SUCCESS("Tick complete."))
+
+    def sync_airbnb(self):
+        airbnb = AirbnbAPI(settings.AIRBNB_USERNAME, settings.AIRBNB_PASSWORD)
+        resos = airbnb.get_reservations(4)
+
+        for confirmation_code, reso in resos.items():
+            if Reservation.objects.filter(confirmation_code=confirmation_code).exists():
+                self.stdout.write("Skipping existing reservation: %s" % reso['guest'].get('full_name', '<no name>'))
+            else:
+                Reservation.objects.create(confirmation_code=confirmation_code,
+                    dates=(reso["start_date"], reso["end_date"]), guest=reso['guest'])
+                self.stdout.write("Saved new reservation: %s" % reso['guest'].get('full_name', '<no name>'))
+
+        self.stdout.write(
+            self.style.SUCCESS("Now have %s reservations in the database!" % Reservation.objects.count()))
+
+    def send_daily_email(self):
+        self.stdout.write("<<<TODO: send daily email>>>")
