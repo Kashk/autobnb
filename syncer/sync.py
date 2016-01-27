@@ -90,7 +90,7 @@ if __name__ == '__main__':
     import django
     django.setup()
 
-    airbnb = AirbnbAPI(## todo fill in
+    airbnb = AirbnbAPI("zain@inzain.net", "0v*8HrG*&D25EyXP")
     resos = airbnb.get_reservations(4)
 
     from guests.models import Reservation
