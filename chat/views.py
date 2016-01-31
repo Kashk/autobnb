@@ -23,5 +23,6 @@ def reso(request, confirmation_code):
     start_date = timezone.now() - datetime.timedelta(days=7)
     end_date = timezone.now()
     messages = Message.objects.filter(posted_on__range=(start_date, end_date))
+    all_resos = Reservation.objects.filter(dates__contains=datetime.date.today())
 
-    return render(request, 'reso.html', {'reso': reso, 'messages': messages})
+    return render(request, 'reso.html', {'reso': reso, 'messages': messages, 'all_resos': all_resos})

@@ -6,6 +6,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 
   <title>Your reservation</title>
 
@@ -15,19 +16,34 @@
 
   <body class='pattern'>
 
+    <div id='guests' class='image clearfix'>
+      {% for reso in all_resos %}
+      <div class='col6 mb2'>
+      <img class='center col8 mb0' src='{{ reso.picture }}'/>      
+      <p class='text-center strong'>{{ reso.name}}</p>
+      <p class='text-center'>{{ reso.location }}</p>
+      </div>
+      {% endfor %}
+    </div>
+
     <div class="">
-    <h2 class="header z100 pattern p1">
-  Hi, {{ reso.name }}!
-</h2>
+      <header class='p1'>
+    <a href='#guests' class="col10 strong guests">
+      See who's at the house
+    </a>
+    <a href='#info' class='text-right col2 strong'>
+      FAQ
+    </a>
+      </header>
 
 
     <div class="splash white">
-  <div class='messages center col12'>
+  <div class='messages center col12 clearfix'>
   {% for msg in messages %}
     <div class='message mb1 col11 ml0'>
       <div class='contents'>
-        <p class='col10 text-right time'>
-        {{ msg.posted_on }}
+        <p class='col10 ml1 time text-right'>
+        {{ msg.posted_on|date:"P"}}
         </p>
         <ul>
       <li>
@@ -35,7 +51,7 @@
       </li>
       </div>
         <div class='image z100'><img src="{{ msg.picture }}"></div>
-      <p class='from col8'>
+      <p class='from'>
         {{ msg.posted_by }}
       </p>
     </div>
@@ -53,4 +69,30 @@
 
   </body>
 
+  <script>
+    $(function(){
+
+      $('.messages').height($( window ).height());
+
+      $('.messages').scrollTop($('.messages')[0].scrollHeight );
+
+      $('a.guests').on('click', function(){
+        if ( $(this).text() == '< Back to Messages' ) {
+          $('#guests').hide();
+          $('.splash').fadeIn();
+
+          $(this).text('See who\'s at the house')
+
+        } else {
+          $('.splash').hide();
+          $('#guests').fadeIn();
+
+          $(this).text('< Back to Messages')
+        }
+      })
+
+   
+    
+    })
+  </script>
 </html>
