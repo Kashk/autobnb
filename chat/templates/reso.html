@@ -21,7 +21,7 @@
       <div class='col6 mb2'>
       <img class='center col8 mb0' src='{{ reso.picture }}'/>      
       <p class='text-center strong'>{{ reso.name}}</p>
-      <p class='text-center'>{{ reso.location }}</p>
+      <p class='text-center'>{{ reso.location|default:"Ask me where I'm from!" }}</p>
       </div>
       {% endfor %}
     </div>
