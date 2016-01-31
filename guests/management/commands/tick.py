@@ -40,7 +40,7 @@ class Command(BaseCommand):
                 dates=(reso["start_date"], reso["end_date"]),
                 guest=reso['guest'],
                 thread_id=reso.get('thread_id', ''))
-            self.stdout.write("Saved new reservation: %s" % reso['guest'].get('full_name', '<no name>'))
+            self.stdout.write("Saved new reservation: %s" % confirmation_code)
 
         self.stdout.write(
             self.style.SUCCESS("Now have %s reservations in the database!" % Reservation.objects.count()))
