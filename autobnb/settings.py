@@ -123,7 +123,7 @@ STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 if 'AIRBNB_USERNAME' not in os.environ or 'AIRBNB_PASSWORD' not in os.environ:
     raise Exception("You need to set the airbnb user/pass. Either do it on the command line\
-        \nor set it in .env and use `heroku local` to run this")
+        \nor set it in .env and use `heroku local:run !!` to run this")
 
 # env vars that should be set in .env
 AIRBNB_USERNAME = os.environ['AIRBNB_USERNAME']

@@ -18,7 +18,9 @@ def reso(request, confirmation_code):
         return HttpResponseGone("Sorry! Your reservation ended already so you can't see this anymore.")
 
     if 'msg' in request.POST:
-        Message.objects.create(text=request.POST['msg'], reso=reso)
+        posted_by = "%s from %s" % (reso.name, reso.location)
+        picture = reso.picture
+        Message.objects.create(text=request.POST['msg'], posted_by=posted_by, picture=picture)
 
     start_date = timezone.now() - datetime.timedelta(days=7)
     end_date = timezone.now()
