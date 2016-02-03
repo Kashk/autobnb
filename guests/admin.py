@@ -2,6 +2,7 @@ from django.contrib import admin
 from guests.models import Reservation, Resident
 
 class ReservationAdmin(admin.ModelAdmin):
+    search_fields = ['confirmation_code', 'guest']
     actions = ['promote_to_resident']
 
     def promote_to_resident(self, request, queryset):
