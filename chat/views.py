@@ -15,7 +15,7 @@ def reso(request, confirmation_code):
         return HttpResponseNotFound("Your reservation confirmation code wasn't found.")
 
     if reso.dates.upper < datetime.date.today() - datetime.timedelta(days=2):
-        return HttpResponseGone("Sorry! Your reservation ended already, so you can't see this anymore.")
+        return HttpResponseGone("Sorry! Your reservation ended already so you can't see this anymore.")
 
     if 'msg' in request.POST:
         Message.objects.create(text=request.POST['msg'], reso=reso)
