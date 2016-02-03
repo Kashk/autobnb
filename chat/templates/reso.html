@@ -17,6 +17,12 @@
   <body class='pattern'>
 
     <div id='guests' class='image clearfix'>
+      {% for resident in all_residents %}
+      <div class='col6 mb2'>
+      <img class='center col8 mb0' src='{{ resident.picture }}'/>
+      <p class='text-center strong'>{{ resident.label}}</p>
+      </div>
+      {% endfor %}
       {% for reso in all_resos %}
       <div class='col6 mb2'>
       <img class='center col8 mb0' src='{{ reso.picture }}'/>      

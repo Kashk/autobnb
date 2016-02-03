@@ -13,8 +13,13 @@ def render_chat_page(request):
     end_date = timezone.now()
     messages = Message.objects.filter(posted_on__range=(start_date, end_date))
     all_resos = Reservation.objects.filter(dates__contains=datetime.date.today())
+    all_residents = Resident.objects.filter(is_active=True).order_by('id')
 
-    return render(request, 'reso.html', {'reso': reso, 'messages': messages, 'all_resos': all_resos})
+    return render(request, 'reso.html', {
+        'messages': messages,
+        'all_resos': all_resos,
+        'all_residents': all_residents,
+    })
 
 
 def reso(request, confirmation_code):
