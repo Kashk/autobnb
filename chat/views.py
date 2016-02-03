@@ -1,7 +1,7 @@
 import datetime
 
 from django.conf import settings
-from django.http import HttpResponseNotFound, HttpResponseGone, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseNotFound, HttpResponseGone, HttpResponseRedirect
 from django.shortcuts import render
 from django.utils import timezone
 
@@ -97,3 +97,7 @@ def resident(request, slug):
         new_message_notification(posted_by, request.POST['msg'])
 
     return render_chat_page(request)
+
+
+def root(request):
+    return HttpResponse("Hello there! Go check your Airbnb messages for a link to access this thing.")
