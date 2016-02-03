@@ -24,30 +24,39 @@ def render_chat_page(request):
     })
 
 
+message_template = """"A guest at the hostel posted this message for everyone:
+
+%s
+-- %s
+
+You can respond here:
+%s%s
+
+PS: This is an automated message we're testing out. If this is fun or annoying, give us some feedback!"""
+
 def new_message_notification(posted_by, text):
-    resos = Reservation.objects.filter(dates__contains=datetime.date.today()
-        ).exclude(thread_id=None).exclude(thread_id="").values_list('thread_id', flat=True)
-    residents = Resident.objects.filter(is_active=True
-        ).exclude(thread_id=None).exclude(thread_id="").values_list('thread_id', flat=True)
-
-    thread_ids = list(resos) + list(residents)
-
-    thread_ids = [152531217]  # hardcoded to Duncan
-    resos = Reservation.objects.filter(dates__contains=datetime.date.today()
-        ).exclude(thread_id=None).exclude(thread_id="")
-    residents = Resident.objects.filter(is_active=True
-        ).exclude(thread_id=None).exclude(thread_id="")
-    names = [reso.name for reso in resos] + [resident.label for resident in residents]
-
-    message = """
-Hi! This message was sent to the whole house.
-%s says: %s
-DEBUG INFO: This notification would've been sent to: %s
-""" % (posted_by, text, names)
-
     airbnb = AirbnbAPI(settings.AIRBNB_USERNAME, settings.AIRBNB_PASSWORD)
-    for thread_id in thread_ids:
-        airbnb.send_message(thread_id, message)
+
+    resos = Reservation.objects.filter(dates__contains=datetime.date.today()
+        ).exclude(thread_id=None).exclude(thread_id="")
+    
+    for reso in resos:
+        message = message_template % (text, posted_by, settings.DOMAIN, reso.get_absolute_url())
+        airbnb.send_message(reso.thread_id, message)
+
+    residents = Resident.objects.filter(is_active=True
+        ).exclude(thread_id=None).exclude(thread_id="")
+
+    for resident in residents:
+        message = message_template % (text, posted_by, settings.DOMAIN, resident.get_absolute_url())
+        airbnb.send_message(resident.thread_id, message)
+
+    # thread_ids = [152531217]  # hardcoded to Duncan
+    # resos = Reservation.objects.filter(dates__contains=datetime.date.today()
+    #     ).exclude(thread_id=None).exclude(thread_id="")
+    # residents = Resident.objects.filter(is_active=True
+    #     ).exclude(thread_id=None).exclude(thread_id="")
+    # names = [reso.name for reso in resos] + [resident.label for resident in residents]
 
 
 def reso(request, confirmation_code):

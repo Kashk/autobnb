@@ -1,4 +1,5 @@
 from django.contrib.postgres.fields import DateRangeField, JSONField
+from django.core.urlresolvers import reverse
 from django.db import models
 
 
@@ -34,6 +35,9 @@ class Reservation(models.Model):
     def __str__(self):
         return "%s - %s" % (self.confirmation_code, self.name)
 
+    def get_absolute_url(self):
+        return reverse('reso-home', args=[self.confirmation_code])
+
 
 class Resident(models.Model):
     was_reso = models.CharField(max_length=10, blank=True)
@@ -49,3 +53,6 @@ class Resident(models.Model):
 
     def __str__(self):
         return self.label
+
+    def get_absolute_url(self):
+        return reverse('resident-home', args=[self.slug])

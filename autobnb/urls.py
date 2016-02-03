@@ -4,6 +4,6 @@ import chat.views
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^reso/(?P<confirmation_code>\w+)$', chat.views.reso),
-    url(r'^resident/(?P<slug>\w+)$', chat.views.resident),
+    url(r'^reso/(?P<confirmation_code>\w+)$', chat.views.reso, name='reso-home'),
+    url(r'^resident/(?P<slug>\w+)$', chat.views.resident, name='resident-home'),
 ]

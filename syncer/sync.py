@@ -120,5 +120,9 @@ class AirbnbAPI:
             'thread_id': thread_id,
         }
 
+        if not settings.SEND_MESSAGES:
+            print(payload)
+            return
+
         r = self._session.post('https://api.airbnb.com/v2/messages', data=json.dumps(payload))
         r.raise_for_status()
