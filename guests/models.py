@@ -36,7 +36,7 @@ class Reservation(models.Model):
 
 
 class Resident(models.Model):
-    was_reso = models.CharField(max_length=10, unique=True, blank=True)
+    was_reso = models.CharField(max_length=10, blank=True)
     thread_id = models.CharField(max_length=10, blank=True, null=True)
     is_active = models.BooleanField(default=True)
 
