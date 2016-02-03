@@ -45,7 +45,7 @@ class Resident(models.Model):
     label = models.CharField(max_length=75, unique=True)
     picture = models.URLField(default="https://i.imgur.com/WBdUBl0.jpg")
 
-    guest = JSONField()
+    guest = JSONField(null=True, blank=True)
 
     def __str__(self):
         return self.label
