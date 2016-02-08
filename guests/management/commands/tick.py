@@ -89,4 +89,15 @@ class Command(BaseCommand):
             ReservationLog.objects.create(confirmation_code=reso.confirmation_code, action='send_checkin_msg')
 
     def send_guest2guest_link(self):
-        self.stdout.write("<<<TODO: send guest2guest link>>>")
+        already_sent_resos = ReservationLog.objects.filter(action='send_guest2guest_link')
+        codes = [r.confirmation_code for r in already_sent_resos]
+        resos = Reservation.objects.exclude(
+            confirmation_code__in=codes).exclude(
+            thread_id=None).exclude(
+            thread_id='').filter(dates__startswith=datetime.date.today())
+
+        for reso in resos:
+            print("Sending guest2guest link to: %s" % reso.name)
+            msg = render_to_string('guest2guest_link_msg.txt', {'reso': reso, 'DOMAIN': settings.DOMAIN})
+            self.airbnb.send_message(reso.thread_id, msg)
+            ReservationLog.objects.create(confirmation_code=reso.confirmation_code, action='send_guest2guest_link')
