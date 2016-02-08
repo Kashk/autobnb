@@ -1,4 +1,4 @@
-Since you're checking in today, take a look at this. It's a little website that lets you see everyone staying at our place. Whenever anyone is planning a group activity, we post it to this page and a message gets sent out to everyone staying with us.
+Since you're checking in today, take a look at this. We made a little website that lets you see everyone staying at our place. Whenever anyone is planning a group activity, we post it to this page and a message gets sent out to everyone staying with us.
 
 {{ DOMAIN }}{{ reso.get_absolute_url }}
 
