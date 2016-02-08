@@ -78,8 +78,8 @@ class Command(BaseCommand):
             thread_id='').filter(
                 Q(dates__startswith=datetime.date.today()) |
                 Q(dates__startswith=datetime.date.today() + datetime.timedelta(days=1)) |
-                Q(dates__startswith=datetime.date.today() + datetime.timedelta(days=1)) |
-                Q(dates__startswith=datetime.date.today() + datetime.timedelta(days=1)))
+                Q(dates__startswith=datetime.date.today() + datetime.timedelta(days=2)) |
+                Q(dates__startswith=datetime.date.today() + datetime.timedelta(days=3)))
         
         msg = render_to_string('checkin_msg.txt', {})
 
