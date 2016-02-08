@@ -62,3 +62,6 @@ class ReservationLog(models.Model):
     confirmation_code = models.CharField(max_length=10)
     created_on = models.DateTimeField(auto_now_add=True)
     action = models.CharField(max_length=50)
+
+    def __str__(self):
+        return "%s: %s" % (self.confirmation_code, self.action)

@@ -129,4 +129,4 @@ if 'AIRBNB_USERNAME' not in os.environ or 'AIRBNB_PASSWORD' not in os.environ:
 AIRBNB_USERNAME = os.environ['AIRBNB_USERNAME']
 AIRBNB_PASSWORD = os.environ['AIRBNB_PASSWORD']
 DOMAIN = os.environ['DOMAIN']
-SEND_MESSAGES = os.environ['SEND_MESSAGES'] == 1
+SEND_MESSAGES = os.environ['SEND_MESSAGES'] == '1'
