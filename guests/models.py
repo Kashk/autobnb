@@ -56,3 +56,9 @@ class Resident(models.Model):
 
     def get_absolute_url(self):
         return reverse('resident-home', args=[self.slug])
+
+
+class ReservationLog(models.Model):
+    confirmation_code = models.CharField(max_length=10)
+    created_on = models.DateTimeField(auto_now_add=True)
+    action = models.CharField(max_length=50)

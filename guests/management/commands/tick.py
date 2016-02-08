@@ -1,7 +1,11 @@
+import datetime
+
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
+from django.db.models import Q
+from django.template.loader import render_to_string
 
-from guests.models import Reservation
+from guests.models import Reservation, ReservationLog
 from syncer.sync import AirbnbAPI
 
 
@@ -21,16 +25,33 @@ class Command(BaseCommand):
             default=False,
             help='Shoot out the daily summary email to owners')
 
+        parser.add_argument('--send-checkin-msg',
+            action='store_true',
+            dest='send_checkin_msg',
+            default=False,
+            help='Send Airbnb checkin msg to people checking in within 3 days')
+
+        parser.add_argument('--send-guest2guest-link',
+            action='store_true',
+            dest='send_guest2guest_link',
+            default=False,
+            help='Send guest2guest link to people checking in today')
+
     def handle(self, *args, **options):
+        self.airbnb = AirbnbAPI(settings.AIRBNB_USERNAME, settings.AIRBNB_PASSWORD)
+
         if options['sync_airbnb']:
             self.sync_airbnb()
         if options['send_daily_email']:
             self.send_daily_email()
+        if options['send_checkin_msg']:
+            self.send_checkin_msg()
+        if options['send_guest2guest_link']:
+            self.send_guest2guest_link()
         self.stdout.write(self.style.SUCCESS("Tock."))
 
     def sync_airbnb(self):
-        airbnb = AirbnbAPI(settings.AIRBNB_USERNAME, settings.AIRBNB_PASSWORD)
-        resos = airbnb.get_all_reservations()
+        resos = self.airbnb.get_all_reservations()
 
         Reservation.objects.all().delete()  # lol
 
@@ -47,3 +68,25 @@ class Command(BaseCommand):
 
     def send_daily_email(self):
         self.stdout.write("<<<TODO: send daily email>>>")
+
+    def send_checkin_msg(self):
+        already_sent_resos = ReservationLog.objects.filter(action='send_checkin_msg')
+        codes = [r.confirmation_code for r in already_sent_resos]
+        resos = Reservation.objects.exclude(
+            confirmation_code__in=codes).exclude(
+            thread_id=None).exclude(
+            thread_id='').filter(
+                Q(dates__startswith=datetime.date.today()) |
+                Q(dates__startswith=datetime.date.today() + datetime.timedelta(days=1)) |
+                Q(dates__startswith=datetime.date.today() + datetime.timedelta(days=2)) |
+                Q(dates__startswith=datetime.date.today() + datetime.timedelta(days=3)))
+        
+        msg = render_to_string('checkin_msg.txt', {})
+
+        for reso in resos:
+            print("Sending check-in msg to: %s" % reso.name)
+            self.airbnb.send_message(reso.thread_id, msg)
+            ReservationLog.objects.create(confirmation_code=reso.confirmation_code, action='send_checkin_msg')
+
+    def send_guest2guest_link(self):
+        self.stdout.write("<<<TODO: send guest2guest link>>>")
