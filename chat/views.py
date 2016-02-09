@@ -24,9 +24,9 @@ def render_chat_page(request):
     })
 
 
-message_template = """"A guest at the hostel posted this message for everyone:
+message_template = """A guest at the hostel posted this message for everyone:
 
-%s
+"%s"
 -- %s
 
 You can respond here:
