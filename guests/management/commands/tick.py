@@ -37,6 +37,12 @@ class Command(BaseCommand):
             default=False,
             help='Send guest2guest link to people checking in today')
 
+        parser.add_argument('--send-checkout-msg',
+            action='store_true',
+            dest='send_checkout_msg',
+            default=False,
+            help='Send checkout msg to people checking out today')
+
     def handle(self, *args, **options):
         self.airbnb = AirbnbAPI(settings.AIRBNB_USERNAME, settings.AIRBNB_PASSWORD)
 
@@ -48,6 +54,8 @@ class Command(BaseCommand):
             self.send_checkin_msg()
         if options['send_guest2guest_link']:
             self.send_guest2guest_link()
+        if options['send_checkout_msg']:
+            self.send_checkout_msg()
         self.stdout.write(self.style.SUCCESS("Tock."))
 
     def sync_airbnb(self):
@@ -101,3 +109,18 @@ class Command(BaseCommand):
             msg = render_to_string('guest2guest_link_msg.txt', {'reso': reso, 'DOMAIN': settings.DOMAIN})
             self.airbnb.send_message(reso.thread_id, msg)
             ReservationLog.objects.create(confirmation_code=reso.confirmation_code, action='send_guest2guest_link')
+
+    def send_checkout_msg(self):
+        already_sent_resos = ReservationLog.objects.filter(action='send_checkout_msg')
+        codes = [r.confirmation_code for r in already_sent_resos]
+        resos = Reservation.objects.exclude(
+            confirmation_code__in=codes).exclude(
+            thread_id=None).exclude(
+            thread_id='').filter(dates__endswith=datetime.date.today())
+
+        msg = render_to_string('checkout_msg.txt', {})
+
+        for reso in resos:
+            print("Sending check-out msg to: %s" % reso.name)
+            self.airbnb.send_message(reso.thread_id, msg)
+            ReservationLog.objects.create(confirmation_code=reso.confirmation_code, action='send_checkout_msg')
