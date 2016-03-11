@@ -106,8 +106,10 @@ class Command(BaseCommand):
 
         for reso in resos:
             print("Sending guest2guest link to: %s" % reso.name)
-            msg = render_to_string('guest2guest_link_msg.txt', {'reso': reso, 'DOMAIN': settings.DOMAIN})
+            link = "%s%s" % (settings.DOMAIN, reso.get_absolute_url())
+            msg = render_to_string('guest2guest_link_msg.txt')
             self.airbnb.send_message(reso.thread_id, msg)
+            self.airbnb.send_message(reso.thread_id, link)
             ReservationLog.objects.create(confirmation_code=reso.confirmation_code, action='send_guest2guest_link')
 
     def send_checkout_msg(self):
