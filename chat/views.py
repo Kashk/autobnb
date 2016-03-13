@@ -59,6 +59,13 @@ def new_message_notification(posted_by, text):
     # names = [reso.name for reso in resos] + [resident.label for resident in residents]
 
 
+def is_a_double_post(posted_by, text):
+    latest_msg = Message.objects.latest('posted_on')
+    if latest_msg.posted_by == posted_by and latest_msg.text == text:
+        return True
+    return False
+
+
 def reso(request, confirmation_code):
     resident = Resident.objects.filter(was_reso=confirmation_code)
     if resident.exists():
@@ -75,8 +82,9 @@ def reso(request, confirmation_code):
     if 'msg' in request.POST:
         posted_by = "%s from %s" % (reso.name, reso.location)
         picture = reso.picture
-        Message.objects.create(text=request.POST['msg'], posted_by=posted_by, picture=picture)
-        new_message_notification(posted_by, request.POST['msg'])
+        if not is_a_double_post(posted_by, request.POST['msg']):
+            Message.objects.create(text=request.POST['msg'], posted_by=posted_by, picture=picture)
+            new_message_notification(posted_by, request.POST['msg'])
 
     return render_chat_page(request)
 
@@ -93,8 +101,9 @@ def resident(request, slug):
     if 'msg' in request.POST:
         posted_by = resident.label
         picture = resident.picture
-        Message.objects.create(text=request.POST['msg'], posted_by=posted_by, picture=picture)
-        new_message_notification(posted_by, request.POST['msg'])
+        if not is_a_double_post(posted_by, request.POST['msg']):
+            Message.objects.create(text=request.POST['msg'], posted_by=posted_by, picture=picture)
+            new_message_notification(posted_by, request.POST['msg'])
 
     return render_chat_page(request)
 
