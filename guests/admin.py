@@ -1,6 +1,7 @@
 from django.contrib import admin
 from guests.models import Reservation, Resident
 
+
 class ReservationAdmin(admin.ModelAdmin):
     search_fields = ['confirmation_code', 'guest']
     actions = ['promote_to_resident']
@@ -29,7 +30,8 @@ class ReservationAdmin(admin.ModelAdmin):
 
 
 class ResidentAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['slug', 'label', 'is_active']
+    search_filter = ['is_active']
 
 
 admin.site.register(Reservation, ReservationAdmin)
