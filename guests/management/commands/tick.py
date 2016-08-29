@@ -25,6 +25,12 @@ class Command(BaseCommand):
                             default=False,
                             help='Shoot out the daily summary email to owners')
 
+        parser.add_argument('--send-accept-msg',
+                            action='store_true',
+                            dest='send_accept_msg',
+                            default=False,
+                            help='Send a message to new resos confirming their booking')
+
         parser.add_argument('--send-checkin-msg',
                             action='store_true',
                             dest='send_checkin_msg',
@@ -50,6 +56,8 @@ class Command(BaseCommand):
             self.sync_airbnb()
         if options['send_daily_email']:
             self.send_daily_email()
+        if options['send_accept_msg']:
+            self.send_accept_msg()
         if options['send_checkin_msg']:
             self.send_checkin_msg()
         if options['send_guest2guest_link']:
@@ -76,6 +84,24 @@ class Command(BaseCommand):
 
     def send_daily_email(self):
         self.stdout.write("<<<TODO: send daily email>>>")
+
+    def send_accept_msg(self):
+        """
+        Send a message to all reservations that are new in the database
+        """
+        already_sent_resos = ReservationLog.objects.filter(action='send_accept_msg')
+        codes = [r.confirmation_code for r in already_sent_resos]
+        resos = Reservation.objects.exclude(
+            confirmation_code__in=codes).exclude(
+            thread_id=None).exclude(
+            thread_id='')
+
+        msg = render_to_string('send_accept_msg.txt', {})
+
+        for reso in resos:
+            print("Sending accept msg to: %s" % reso.name)
+            self.airbnb.send_message(reso.thread_id, msg)
+            #ReservationLog.objects.create(confirmation_code=reso.confirmation_code, action='send_accept_msg')
 
     def send_checkin_msg(self):
         already_sent_resos = ReservationLog.objects.filter(action='send_checkin_msg')
