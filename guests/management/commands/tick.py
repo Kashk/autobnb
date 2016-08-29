@@ -101,7 +101,7 @@ class Command(BaseCommand):
         for reso in resos:
             print("Sending accept msg to: %s" % reso.name)
             self.airbnb.send_message(reso.thread_id, msg)
-            #ReservationLog.objects.create(confirmation_code=reso.confirmation_code, action='send_accept_msg')
+            ReservationLog.objects.create(confirmation_code=reso.confirmation_code, action='send_accept_msg')
 
     def send_checkin_msg(self):
         already_sent_resos = ReservationLog.objects.filter(action='send_checkin_msg')
