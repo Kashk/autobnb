@@ -109,7 +109,6 @@ ALLOWED_HOSTS = ['*']
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_ROOT = 'staticfiles'
 STATIC_URL = '/static/'
 
@@ -130,3 +129,9 @@ AIRBNB_USERNAME = os.environ['AIRBNB_USERNAME']
 AIRBNB_PASSWORD = os.environ['AIRBNB_PASSWORD']
 DOMAIN = os.environ['DOMAIN']
 SEND_MESSAGES = os.environ['SEND_MESSAGES'] == '1'
+HOSTEL_NAME = os.environ['HOSTEL_NAME']
+
+TEMPLATES[0]['DIRS'].append(os.path.join(BASE_DIR, 'templates', HOSTEL_NAME))
+if not os.path.isdir(os.path.join(BASE_DIR, 'templates', HOSTEL_NAME)):
+    raise Exception("Templates dir doesn't exist. HOSTEL_NAME is probably set incorrectly: %s" %
+                    HOSTEL_NAME)
