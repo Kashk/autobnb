@@ -1,7 +1,7 @@
 import datetime
 
 from django.conf import settings
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from django.db.models import Q
 from django.template.loader import render_to_string
 
@@ -14,34 +14,34 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('--sync-airbnb',
-            action='store_true',
-            dest='sync_airbnb',
-            default=False,
-            help='Fetch reservations from airbnb and save them')
+                            action='store_true',
+                            dest='sync_airbnb',
+                            default=False,
+                            help='Fetch reservations from airbnb and save them')
 
         parser.add_argument('--send-daily-email',
-            action='store_true',
-            dest='send_daily_email',
-            default=False,
-            help='Shoot out the daily summary email to owners')
+                            action='store_true',
+                            dest='send_daily_email',
+                            default=False,
+                            help='Shoot out the daily summary email to owners')
 
         parser.add_argument('--send-checkin-msg',
-            action='store_true',
-            dest='send_checkin_msg',
-            default=False,
-            help='Send Airbnb checkin msg to people checking in within 3 days')
+                            action='store_true',
+                            dest='send_checkin_msg',
+                            default=False,
+                            help='Send Airbnb checkin msg to people checking in within 3 days')
 
         parser.add_argument('--send-guest2guest-link',
-            action='store_true',
-            dest='send_guest2guest_link',
-            default=False,
-            help='Send guest2guest link to people checking in today')
+                            action='store_true',
+                            dest='send_guest2guest_link',
+                            default=False,
+                            help='Send guest2guest link to people checking in today')
 
         parser.add_argument('--send-checkout-msg',
-            action='store_true',
-            dest='send_checkout_msg',
-            default=False,
-            help='Send checkout msg to people checking out today')
+                            action='store_true',
+                            dest='send_checkout_msg',
+                            default=False,
+                            help='Send checkout msg to people checking out today')
 
     def handle(self, *args, **options):
         self.airbnb = AirbnbAPI(settings.AIRBNB_USERNAME, settings.AIRBNB_PASSWORD)
@@ -88,7 +88,7 @@ class Command(BaseCommand):
                 Q(dates__startswith=datetime.date.today() + datetime.timedelta(days=1)) |
                 Q(dates__startswith=datetime.date.today() + datetime.timedelta(days=2)) |
                 Q(dates__startswith=datetime.date.today() + datetime.timedelta(days=3)))
-        
+
         msg = render_to_string('checkin_msg.txt', {})
 
         for reso in resos:
