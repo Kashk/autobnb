@@ -7,16 +7,32 @@ logging.basicConfig(level=logging.DEBUG)
 API_KEY = "915pw2pnf4h1aiguhph5gc5b2"  # same for everyone on mobile
 #API_KEY = "d306zoyjsyarp7ifhu67rjxn52tv0t20"  # same for everyone on desktop
 
-LISTING_IDS = {
-    1: 5196399,
-    2: 5253439,
-    3: 5299538,
-    4: 5299461,
-    5: 8763366,
-    6: 8763529,
-    7: 8763407,
-    8: 8763620
+LISTING_IDS_FOR = {
+    'treat': {
+        1: 5196399,
+        2: 5253439,
+        3: 5299538,
+        4: 5299461,
+        5: 8763366,
+        6: 8763529,
+        7: 8763407,
+        8: 8763620
+    },
+    'sunnyside': {
+        1: 9051386,
+        2: 9065928,
+        3: 9074064,
+        4: 9080727,
+        5: 9080777,
+        6: 9080803,
+        7: 9080876,
+        8: 9080895,
+        9: 9080921,
+        10: 9080961,
+    },
 }
+
+LISTING_IDS = LISTING_IDS_FOR[settings.HOSTEL_NAME]
 
 
 class AirbnbAPI:
